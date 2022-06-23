@@ -1,6 +1,6 @@
 <template>
   <section>
-    <strong class="display">
+    <strong :style="timerDisplayStyle">
       {{ TimerDisplay }}
     </strong>
   </section>
@@ -16,6 +16,17 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    ignoreTheme: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      timerDisplayStyle: {
+        color: this.ignoreTheme ? "#4a4a4a" : "var(--text-primary)",
+      },
+    };
   },
   computed: {
     TimerDisplay(): string {
@@ -24,9 +35,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-.display {
-  color: var(--text-primary);
-}
-</style>

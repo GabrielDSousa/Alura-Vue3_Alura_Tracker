@@ -3,7 +3,7 @@
     <div class="columns">
       <div class="column is-7">{{ task.description || "Random task" }}</div>
       <div class="column">
-        <TimerDisplay :timeInSeconds="task.timeInSeconds" />
+        <TimerDisplay :timeInSeconds="task.timeInSeconds" :ignoreTheme="true" />
       </div>
     </div>
   </ListBox>
