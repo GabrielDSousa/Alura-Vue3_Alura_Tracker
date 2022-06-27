@@ -12,25 +12,13 @@
     iconClass="fa-stop"
     :methodOnClick="stop"
   />
-  <!-- <button class="button" @click="start" :disabled="timerRunning">
-    <span class="icon">
-      <i class="fas fa-play"></i>
-    </span>
-    <span>play</span>
-  </button>
-
-  <button class="button" @click="stop" :disabled="!timerRunning">
-    <span class="icon">
-      <i class="fas fa-stop"></i>
-    </span>
-    <span>stop</span>
-  </button> -->
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import TimerDisplay from "./TimerDisplay.vue";
 import ButtonTimer from "./ButtonTimer.vue";
+import { useStore } from "@/store";
 
 export default defineComponent({
   name: "TimerControls",
@@ -59,6 +47,13 @@ export default defineComponent({
       this.$emit("finishedTask", this.timeInSeconds);
       this.timeInSeconds = 0;
     },
+  },
+  setup() {
+    const store = useStore();
+    return {
+      store,
+      projects: computed(() => store.state.projects),
+    };
   },
 });
 </script>
