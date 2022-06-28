@@ -39,13 +39,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import TimerControls from "./TimerControls.vue";
 import { useStore } from "vuex";
 import { key } from "@/store";
-import { CREATE_TASK } from "@/store/mutationsType";
-import { NotificationType } from "@/interfaces/INotification";
+import { CREATE_TASK } from "@/store/actionsType";
 import useNotifier from "@/hooks/notifier";
+import { GET_PROJECTS } from "@/store/actionsType";
 
 export default defineComponent({
   name: "FormTask",
@@ -53,42 +53,40 @@ export default defineComponent({
   components: {
     TimerControls,
   },
-  data() {
-    return {
-      description: "",
-      idProject: "",
-      id: "",
-    };
-  },
-  methods: {
-    saveTask(TimerDisplay: number): void {
-      const project = this.projects.find((proj) => proj.id == this.idProject);
-
-      if (!project) {
-        this.notify(
-          "Ops!",
-          "Select one project before finish the task!",
-          NotificationType.ERROR
-        );
-        return;
-      }
-
-      const task = {
-        timeInSeconds: TimerDisplay,
-        description: this.description,
-        project: project,
-      };
-      this.store.commit(CREATE_TASK, task);
-
-      this.description = "";
-    },
-  },
   setup() {
+    //Imports and hooks
     const store = useStore(key);
     const { notify } = useNotifier();
+
+    //Reactive variables
+    const description = ref("");
+    const idProject = ref("");
+    const projects = computed(() => store.state.project.projects);
+
+    //Methods
+    const saveTask = (TimerDisplay: number): void => {
+      const projectChoose = projects.value.find(
+        (proj) => proj.id == idProject.value
+      );
+      const task = {
+        timeInSeconds: TimerDisplay,
+        description: description.value,
+        project: projectChoose,
+      };
+      store.dispatch(CREATE_TASK, task);
+
+      description.value = "";
+    };
+
+    //Dispatch to renew list of projects
+    store.dispatch(GET_PROJECTS);
+
+    //Return of what is used
     return {
-      store,
-      projects: computed(() => store.state.projects),
+      description,
+      idProject,
+      projects,
+      saveTask,
       notify,
     };
   },

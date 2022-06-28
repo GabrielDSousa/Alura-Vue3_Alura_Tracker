@@ -40,20 +40,21 @@
 <script lang="ts">
 import { useStore } from "@/store";
 import { computed, defineComponent } from "vue";
-import { DELETE_PROJECT } from "@/store/mutationsType";
+import { DELETE_PROJECT, GET_PROJECTS } from "@/store/actionsType";
 
 export default defineComponent({
   name: "ProjectsList",
   methods: {
     deleteProject(id: string) {
-      this.store.commit(DELETE_PROJECT, id);
+      this.store.dispatch(DELETE_PROJECT, id);
     },
   },
   setup() {
     const store = useStore();
+    store.dispatch(GET_PROJECTS);
     return {
       store,
-      projects: computed(() => store.state.projects),
+      projects: computed(() => store.state.project.projects),
     };
   },
 });

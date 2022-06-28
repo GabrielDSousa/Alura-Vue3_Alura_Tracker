@@ -7,6 +7,11 @@
         <TimerDisplay :timeInSeconds="task.timeInSeconds" :ignoreTheme="true" />
       </div>
       <div class="column is-3">
+        <button class="button ml-2" @click="editTask(task)">
+          <span class="icon is-small">
+            <i class="fas fa-pencil-alt"></i>
+          </span>
+        </button>
         <button class="button ml-2 is-danger" @click="deleteTask(task.id)">
           <span class="icon is-small">
             <i class="fas fa-trash"></i>
@@ -23,10 +28,11 @@ import TimerDisplay from "./TimerDisplay.vue";
 import ITask from "../interfaces/ITask";
 import ListBox from "./ListBox.vue";
 import { useStore } from "@/store";
-import { DELETE_TASK } from "@/store/mutationsType";
+import { DELETE_TASK } from "@/store/actionsType";
 
 export default defineComponent({
   name: "FinishedTask",
+  emits: ["editingTask"],
   components: {
     TimerDisplay,
     ListBox,
@@ -38,15 +44,18 @@ export default defineComponent({
     },
   },
   methods: {
+    editTask(task: ITask) {
+      this.$emit("editingTask", task);
+    },
     deleteTask(id: string) {
-      this.store.commit(DELETE_TASK, id);
+      this.store.dispatch(DELETE_TASK, id);
     },
   },
   setup() {
     const store = useStore();
     return {
       store,
-      tasks: computed(() => store.state.tasks),
+      tasks: computed(() => store.state.task.tasks),
     };
   },
 });

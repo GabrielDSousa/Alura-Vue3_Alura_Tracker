@@ -52,7 +52,7 @@ export default defineComponent({
     const store = useStore();
     return {
       store,
-      projects: computed(() => store.state.projects),
+      projects: computed(() => store.state.project.projects),
     };
   },
 });

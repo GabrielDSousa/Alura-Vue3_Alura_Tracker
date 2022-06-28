@@ -8,14 +8,15 @@
       <button class="button" type="submit">Save</button>
     </div>
   </form>
-</template>"New project saved"
+</template>
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { defineComponent } from "vue";
-import { CREATE_PROJECT, EDIT_PROJECT } from "@/store/mutationsType";
+import { defineComponent, ref } from "vue";
+import { CREATE_PROJECT, EDIT_PROJECT } from "@/store/actionsType";
 import { NotificationType } from "@/interfaces/INotification";
-import { notifyMixin } from "@/mixins/notify";
+import useNotifier from "@/hooks/notifier";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "ProjectForm",
@@ -24,43 +25,55 @@ export default defineComponent({
       type: String,
     },
   },
-  mixins: [notifyMixin],
-  mounted() {
-    if (this.id) {
-      const project = this.store.state.projects.find(
-        (proj) => proj.id == this.id
-      );
-      this.projectName = project?.name || "";
-    }
-  },
-  data() {
-    return {
-      projectName: "",
-    };
-  },
-  methods: {
-    saveProject() {
-      if (this.id) {
-        this.store.commit(EDIT_PROJECT, {
-          id: this.id,
-          name: this.projectName,
-        });
-      } else {
-        this.store.commit(CREATE_PROJECT, this.projectName);
-      }
-      this.projectName = "";
-      this.notify(
-        "New project saved",
-        "Done :D   Our project is already available",
-        NotificationType.SUCCESS
-      );
-      this.$router.push("/projects");
-    },
-  },
-  setup() {
+  setup(props) {
+    //Imports and hooks
+    const router = useRouter();
     const store = useStore();
+    const { notify } = useNotifier();
+
+    //Reactive variables
+    const projectName = ref("");
+
+    //Reactivity rule for project name
+    if (props.id) {
+      const project = store.state.project.projects.find(
+        (proj) => proj.id == props.id
+      );
+      projectName.value = project?.name || "";
+    }
+
+    //Methods
+    const saveProject = () => {
+      if (props.id) {
+        store
+          .dispatch(EDIT_PROJECT, {
+            id: props.id,
+            name: projectName.value,
+          })
+          .then(() => {
+            successOnSave();
+          });
+      } else {
+        store.dispatch(CREATE_PROJECT, projectName.value).then(() => {
+          notify(
+            "New project saved",
+            "Done :D   Our project is already available",
+            NotificationType.SUCCESS
+          );
+
+          successOnSave();
+        });
+      }
+    };
+    const successOnSave = () => {
+      projectName.value = "";
+      router.push("/projects");
+    };
+
+    //Return of what is used
     return {
-      store,
+      projectName,
+      saveProject,
     };
   },
 });

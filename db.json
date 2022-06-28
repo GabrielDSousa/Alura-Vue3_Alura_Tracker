@@ -1,0 +1,41 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "Alura Tracker"
+    },
+    {
+      "id": 2,
+      "name": "Formação Vue 3"
+    }
+  ],
+  "tasks": [
+    {
+      "timeInSeconds": 1,
+      "description": "Teste",
+      "project": {
+        "id": 1,
+        "name": "Alura Tracker"
+      },
+      "id": 1
+    },
+    {
+      "timeInSeconds": 3,
+      "description": "Estudo",
+      "project": {
+        "id": 2,
+        "name": "Formação Vue 3"
+      },
+      "id": 2
+    },
+    {
+      "timeInSeconds": 1,
+      "description": "Teseu",
+      "project": {
+        "id": 1,
+        "name": "Alura Tracker"
+      },
+      "id": 3
+    }
+  ]
+}

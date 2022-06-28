@@ -2,7 +2,7 @@ import IProject from "./IProject";
 
 export default interface ITask {
     id: string
-    timeInSecond: number,
+    timeInSeconds: number,
     description: string,
     project?: IProject
 }
